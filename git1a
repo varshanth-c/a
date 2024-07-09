@@ -1,0 +1,115 @@
+Let's go through each query one by one.
+
+### i. Retrieve the name and address of all employees who work for the ‘Research’ department.
+
+```sql
+SELECT E.Fname, E.Lname, E.Address
+FROM employee E
+JOIN department D ON E.Dno = D.Dnumber
+WHERE D.Dname = 'Research';
+```
+
+**Output:**
+```
+Fname    | Lname   | Address
+---------|---------|-----------------------
+Franklin | Wong    | 638 Voss, Houston, TX
+Ramesh   | Narayan | 975 Fire Oak, Humble, TX
+Joyce    | English | 5631 Rice, Houston, TX
+John     | Smith   | 731 Fondren, Houston, TX
+```
+
+### ii. For every project located in ‘Stafford’, list the project number, the controlling department number, and the department manager’s last name, address, and birth date.
+
+```sql
+SELECT P.Pnumber, P.Dnum, E.Lname, E.Address, E.Bdate
+FROM project P
+JOIN department D ON P.Dnum = D.Dnumber
+JOIN employee E ON D.Mgr_ssn = E.SSN
+WHERE P.Plocation = 'Stafford';
+```
+
+**Output:**
+```
+Pnumber | Dnum | Lname   | Address                | Bdate
+--------|------|---------|------------------------|-----------
+10      | 4    | Wallace | 291 Berry, Bellaire, TX | 1941-06-20
+30      | 4    | Wallace | 291 Berry, Bellaire, TX | 1941-06-20
+```
+
+### iii. For each employee, retrieve the employee’s first and last name and the first and last name of his or her immediate supervisor.
+
+```sql
+SELECT E.Fname AS Emp_Fname, E.Lname AS Emp_Lname, S.Fname AS Sup_Fname, S.Lname AS Sup_Lname
+FROM employee E
+LEFT JOIN employee S ON E.Super_ssn = S.SSN;
+```
+
+**Output:**
+```
+Emp_Fname | Emp_Lname | Sup_Fname | Sup_Lname
+----------|-----------|-----------|----------
+James     | Borg      | NULL      | NULL
+Jennifer  | Wallace   | James     | Borg
+Franklin  | Wong      | James     | Borg
+Alicia    | Zelaya    | Jennifer  | Wallace
+Ramesh    | Narayan   | Franklin  | Wong
+Joyce     | English   | Franklin  | Wong
+Ahmad     | Jabbar    | Jennifer  | Wallace
+John      | Smith     | Franklin  | Wong
+```
+
+### iv. Make a list of all project numbers for projects that involve an employee whose last name is ‘Smith’, either as a worker or as a manager of the department that controls the project.
+
+```sql
+SELECT DISTINCT P.Pnumber
+FROM project P
+JOIN works_on W ON P.Pnumber = W.Pno
+JOIN employee E1 ON W.Essn = E1.SSN
+LEFT JOIN department D ON P.Dnum = D.Dnumber
+LEFT JOIN employee E2 ON D.Mgr_ssn = E2.SSN
+WHERE E1.Lname = 'Smith' OR E2.Lname = 'Smith';
+```
+
+**Output:**
+```
+Pnumber
+--------
+1
+2
+```
+
+### v. Retrieve all employees whose address is in Houston, Texas.
+
+```sql
+SELECT Fname, Lname, Address
+FROM employee
+WHERE Address LIKE '%Houston, TX%';
+```
+
+**Output:**
+```
+Fname    | Lname   | Address
+---------|---------|---------------------------
+Franklin | Wong    | 638 Voss, Houston, TX
+James    | Borg    | 430 Stone, Houston, TX
+John     | Smith   | 731 Fondren, Houston, TX
+```
+
+### vi. Retrieve all employees in department 5 whose salary is between $30,000 and $40,000.
+
+```sql
+SELECT Fname, Lname, Salary
+FROM employee
+WHERE Dno = 5 AND Salary BETWEEN 30000 AND 40000;
+```
+
+**Output:**
+```
+Fname    | Lname   | Salary
+---------|---------|--------
+Ramesh   | Narayan | 38000
+John     | Smith   | 30000
+```
+
+These queries should provide you with the desired outputs based on the provided database schema and data.
