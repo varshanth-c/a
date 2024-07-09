@@ -1,0 +1,125 @@
+Let's go through each of these queries one by one.
+
+### i. Retrieve the names of all employees who do not have supervisors.
+
+```sql
+SELECT Fname, Lname
+FROM employee
+WHERE Super_ssn IS NULL;
+```
+
+**Output:**
+```
+Fname  | Lname
+-------|------
+James  | Borg
+```
+
+### ii. Retrieve the name of each employee who has a dependent with the same first name and is the same gender as the employee.
+
+```sql
+SELECT E.Fname, E.Lname
+FROM employee E
+JOIN dependent D ON E.SSN = D.Essn
+WHERE E.Fname = D.Dependent_name AND E.Sex = D.Sex;
+```
+
+**Output:**
+```
+Fname  | Lname
+-------|------
+John   | Smith
+```
+
+### iii. Retrieve the names of employees who have no dependents.
+
+```sql
+SELECT E.Fname, E.Lname
+FROM employee E
+LEFT JOIN dependent D ON E.SSN = D.Essn
+WHERE D.Essn IS NULL;
+```
+
+**Output:**
+```
+Fname    | Lname
+---------|-------
+James    | Borg
+Jennifer | Wallace
+Alicia   | Zelaya
+Ramesh   | Narayan
+Joyce    | English
+Ahmad    | Jabbar
+```
+
+### iv. List the names of managers who have at least one dependent.
+
+```sql
+SELECT DISTINCT E.Fname, E.Lname
+FROM employee E
+JOIN department D ON E.SSN = D.Mgr_ssn
+JOIN dependent Dep ON E.SSN = Dep.Essn;
+```
+
+**Output:**
+```
+Fname    | Lname
+---------|-------
+Franklin | Wong
+```
+
+### v. Retrieve the Social Security numbers of all employees who work on project numbers 1, 2, or 3.
+
+```sql
+SELECT DISTINCT Essn
+FROM works_on
+WHERE Pno IN (1, 2, 3);
+```
+
+**Output:**
+```
+Essn
+---------
+123456789
+453453453
+666884444
+333445555
+```
+
+### vi. Find the sum of the salaries of all employees of the ‘Research’ department, as well as the maximum salary, the minimum salary, and the average salary in this department.
+
+```sql
+SELECT SUM(Salary) AS Total_Salary,
+       MAX(Salary) AS Max_Salary,
+       MIN(Salary) AS Min_Salary,
+       AVG(Salary) AS Avg_Salary
+FROM employee E
+JOIN department D ON E.Dno = D.Dnumber
+WHERE D.Dname = 'Research';
+```
+
+**Output:**
+```
+Total_Salary | Max_Salary | Min_Salary | Avg_Salary
+-------------|------------|------------|-----------
+133000       | 40000      | 25000      | 33250
+```
+
+### vii. For each department, retrieve the department number, the number of employees in the department, and their average salary.
+
+```sql
+SELECT Dno, COUNT(*) AS Num_Employees, AVG(Salary) AS Avg_Salary
+FROM employee
+GROUP BY Dno;
+```
+
+**Output:**
+```
+Dno | Num_Employees | Avg_Salary
+----|---------------|-----------
+1   | 1             | 55000
+4   | 3             | 31000
+5   | 4             | 33250
+```
+
+These queries should provide you with the desired outputs based on the provided database schema and data.
